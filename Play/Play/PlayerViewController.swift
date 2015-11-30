@@ -23,6 +23,7 @@ class PlayerViewController: UIViewController {
     
     var artistLabel: UILabel!
     var titleLabel: UILabel!
+    var currentUrl: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -113,6 +114,7 @@ class PlayerViewController: UIViewController {
         asyncLoadTrackImage(track)
         titleLabel.text = track.title
         artistLabel.text = track.artist
+        
     }
     
     /* 
@@ -125,14 +127,32 @@ class PlayerViewController: UIViewController {
      *  property accordingly.
      */
     func playOrPauseTrack(sender: UIButton) {
+
+        // FILL ME IN
+        loadSong()
+        sender.selected = !sender.selected
+        if sender.selected {
+            player.play()
+        } else {
+            player.pause()
+        }
+
+
+        
+    
+    }
+    func loadSong() {
         let path = NSBundle.mainBundle().pathForResource("Info", ofType: "plist")
         let clientID = NSDictionary(contentsOfFile: path!)?.valueForKey("client_id") as! String
         let track = tracks[currentIndex]
-        let url = NSURL(string: "https://api.soundcloud.com/tracks/\(track.id)/stream?client_id=\(clientID)")!
-        // FILL ME IN
-    
+        let urls = "https://api.soundcloud.com/tracks/\(track.id)/stream?client_id=\(clientID)"
+        let url = NSURL(string: urls)!
+        if currentUrl != urls {
+            currentUrl = urls
+            player.replaceCurrentItemWithPlayerItem(AVPlayerItem(URL: url))
+            print("Replace")
+        }
     }
-    
     /* 
      * Called when the next button is tapped. It should check if there is a next
      * track, and if so it will load the next track's data and
@@ -140,6 +160,15 @@ class PlayerViewController: UIViewController {
      * Remember to update the currentIndex
      */
     func nextTrackTapped(sender: UIButton) {
+        if currentIndex < tracks.count - 1 {
+            currentIndex = currentIndex + 1
+            loadTrackElements()
+            loadSong()
+            print(playPauseButton.selected)
+            if playPauseButton.selected {
+                player.play()
+            }
+        }
     
     }
 
@@ -154,7 +183,18 @@ class PlayerViewController: UIViewController {
      */
 
     func previousTrackTapped(sender: UIButton) {
-    
+        if player.currentTime().seconds > 3 {
+            player.seekToTime(CMTime(seconds: 0.0, preferredTimescale: 1))
+        } else {
+            if currentIndex > 0 {
+                currentIndex = currentIndex - 1
+                loadTrackElements()
+                loadSong()
+                if playPauseButton.selected {
+                    player.play()
+                }
+            }
+        }
     }
     
     
