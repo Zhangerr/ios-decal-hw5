@@ -146,6 +146,7 @@ class PlayerViewController: UIViewController {
         let clientID = NSDictionary(contentsOfFile: path!)?.valueForKey("client_id") as! String
         let track = tracks[currentIndex]
         let urls = "https://api.soundcloud.com/tracks/\(track.id)/stream?client_id=\(clientID)"
+        print(urls)
         let url = NSURL(string: urls)!
         if currentUrl != urls {
             currentUrl = urls
