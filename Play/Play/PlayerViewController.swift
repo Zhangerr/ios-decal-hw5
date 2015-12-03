@@ -146,12 +146,12 @@ class PlayerViewController: UIViewController {
         let clientID = NSDictionary(contentsOfFile: path!)?.valueForKey("client_id") as! String
         let track = tracks[currentIndex]
         let urls = "https://api.soundcloud.com/tracks/\(track.id)/stream?client_id=\(clientID)"
-        print(urls)
+
         let url = NSURL(string: urls)!
         if currentUrl != urls {
             currentUrl = urls
-            player.replaceCurrentItemWithPlayerItem(AVPlayerItem(URL: url))
-            print("Replace")
+            player = AVPlayer(playerItem: AVPlayerItem(URL: url))
+//            player.replaceCurrentItemWithPlayerItem(AVPlayerItem(URL: url))
         }
     }
     /* 
@@ -165,7 +165,7 @@ class PlayerViewController: UIViewController {
             currentIndex = currentIndex + 1
             loadTrackElements()
             loadSong()
-            print(playPauseButton.selected)
+        //    print(playPauseButton.selected)
             if playPauseButton.selected {
                 player.play()
             }
